@@ -1,0 +1,59 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, category, tags, publishedAt } = post.data;
+
+const categoryColors: Record<string, string> = {
+  ai: '#7C3AED', backend: '#059669',
+  architecture: '#D97706', security: '#DC2626', notes: '#6B7280',
+};
+const categoryLabels: Record<string, string> = {
+  ai: 'AI', backend: 'Backend',
+  architecture: 'Architecture', security: 'Security', notes: 'Notes',
+};
+
+const color = categoryColors[category] ?? '#197AA9';
+const label = categoryLabels[category] ?? category;
+
+const dateStr = new Date(publishedAt).toLocaleDateString('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric',
+});
+---
+
+<BaseLayout title={`${title} — thrinath.dev`} description={description}>
+  <div class="container--narrow">
+    <div class="article-header">
+      <div class="cat-breadcrumb">
+        <a href="/">Home</a> / <a href={`/${category}`}>{label}</a>
+      </div>
+      <div class="cat-accent" style={`background: ${color}`}></div>
+      <h1>{title}</h1>
+      <p class="article-header-desc">{description}</p>
+      <div class="reading-meta">
+        <span>{dateStr}</span>
+        <span class="reading-meta-dot"></span>
+        <span style={`color: ${color}; font-weight: 600; font-size: 0.775rem`}>{label}</span>
+        {tags.length > 0 && <><span class="reading-meta-dot"></span>
+        <div style="display:flex; gap:0.375rem; flex-wrap:wrap;">
+          {tags.map(t => <span class="tag">{t}</span>)}
+        </div></>}
+      </div>
+    </div>
+
+    <article class="prose">
+      <slot />
+    </article>
+
+    <div style="padding: 0 0 3rem; border-top: 1px solid var(--color-border); padding-top: 2rem;">
+      <a href={`/${category}`} class="btn btn-outline">
+        More in {label}
+      </a>
+    </div>
+  </div>
+</BaseLayout>

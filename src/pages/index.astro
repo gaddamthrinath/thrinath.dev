@@ -1,0 +1,123 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const sorted = allPosts.sort((a, b) =>
+  new Date(b.data.publishedAt).valueOf() - new Date(a.data.publishedAt).valueOf()
+);
+const recent = sorted.slice(0, 6);
+
+const categories = [
+  {
+    slug: 'ai', label: 'AI',
+    desc: 'LLMs, RAG pipelines, agents, embeddings, and production AI systems.',
+    color: '#7C3AED',
+  },
+  {
+    slug: 'backend', label: 'Backend',
+    desc: 'Node.js, FastAPI, databases, APIs, and server-side architecture.',
+    color: '#059669',
+  },
+  {
+    slug: 'architecture', label: 'Architecture',
+    desc: 'System design, SaaS patterns, distributed systems, and scalability.',
+    color: '#D97706',
+  },
+  {
+    slug: 'security', label: 'Security',
+    desc: 'OAuth, JWT, authentication flows, and web application security.',
+    color: '#DC2626',
+  },
+  {
+    slug: 'notes', label: 'Notes',
+    desc: 'Quick learnings, migration notes, cheatsheets, and TILs.',
+    color: '#6B7280',
+  },
+];
+
+const categoryColors: Record<string, string> = {
+  ai: '#7C3AED', backend: '#059669',
+  architecture: '#D97706', security: '#DC2626', notes: '#6B7280',
+};
+const categoryLabels: Record<string, string> = {
+  ai: 'AI', backend: 'Backend',
+  architecture: 'Architecture', security: 'Security', notes: 'Notes',
+};
+---
+
+<BaseLayout title="Thrinath Gaddam — Full Stack Developer & AI Engineer">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-label">Full Stack Developer · AI Engineer</span>
+      <p class="hero-bio">
+        I work on backend infrastructure, AI/LLM pipelines, and distributed systems.
+        This is where I write about what I build, what breaks, and what I learn along the way.
+      </p>
+      <div class="hero-links">
+        <a href="/about" class="btn btn-primary">About me</a>
+        <a href="/projects" class="btn btn-outline">Projects</a>
+        <a href="https://github.com/gaddamthrinath" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="home-section">
+    <div class="container">
+      <div class="section-row">
+        <div class="section-header" style="margin-bottom:0">
+          <h2 class="section-title">What I write about</h2>
+        </div>
+      </div>
+      <div class="categories-grid" style="margin-top: 1.5rem">
+        {categories.map(cat => (
+          <a href={`/${cat.slug}`} class="category-card" style={`--cat-color: ${cat.color}`}>
+            <div class="category-card-name">{cat.label}</div>
+            <div class="category-card-desc">{cat.desc}</div>
+            <div class="category-card-count">
+              {allPosts.filter(p => p.data.category === cat.slug).length} posts
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent posts -->
+  {recent.length > 0 && (
+    <section class="home-section">
+      <div class="container">
+        <div class="section-row">
+          <div class="section-header" style="margin-bottom:0">
+            <h2 class="section-title">Recent writing</h2>
+          </div>
+        </div>
+        <div class="posts-grid" style="margin-top: 1.5rem">
+          {recent.map(post => {
+            const color = categoryColors[post.data.category] ?? '#197AA9';
+            const label = categoryLabels[post.data.category] ?? post.data.category;
+            const dateStr = new Date(post.data.publishedAt).toLocaleDateString('en-US', {
+              month: 'short', day: 'numeric', year: 'numeric',
+            });
+            return (
+              <a href={`/${post.data.category}/${post.id}`} class="post-card">
+                <div class="post-card-meta">
+                  <span class="post-card-cat" style={`color: ${color}`}>{label}</span>
+                  <span class="post-card-dot"></span>
+                  <span class="post-card-date">{dateStr}</span>
+                </div>
+                <h3>{post.data.title}</h3>
+                <p>{post.data.description}</p>
+                <div class="post-card-tags">
+                  {post.data.tags.slice(0, 3).map(t => <span class="tag">{t}</span>)}
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

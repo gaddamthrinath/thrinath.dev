@@ -1,0 +1,87 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const { title, description = 'Thrinath Gaddam — Full Stack Developer and AI Engineer writing about backend systems, AI/LLMs, architecture, and security.', ogImage } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href={canonicalURL} />
+  <meta name="robots" content="index, follow" />
+
+  <title>{title}</title>
+  <meta name="description" content={description} />
+
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:type" content="website" />
+  {ogImage && <meta property="og:image" content={ogImage} />}
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+</head>
+<body>
+  <nav id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">thrinath<span>.dev</span></a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/ai">AI</a></li>
+        <li><a href="/backend">Backend</a></li>
+        <li><a href="/architecture">Architecture</a></li>
+        <li><a href="/security">Security</a></li>
+        <li><a href="/notes">Notes</a></li>
+        <li><a href="/projects">Projects</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+      <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <p class="footer-copy">&copy; {new Date().getFullYear()} Thrinath Gaddam</p>
+      <div class="footer-links">
+        <a href="https://github.com/gaddamthrinath" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/gthrinath/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:gaddamthrinath925@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('nav-toggle');
+    const links = document.getElementById('nav-links');
+    toggle?.addEventListener('click', () => {
+      const open = links?.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+
+    // highlight active nav link
+    const path = window.location.pathname;
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      const href = (a as HTMLAnchorElement).getAttribute('href') ?? '';
+      if (href !== '/' && path.startsWith(href)) a.classList.add('active');
+    });
+  </script>
+</body>
+</html>

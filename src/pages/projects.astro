@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const projects = [
+ 
+  {
+    label: 'Production · E-Commerce',
+    name: 'EduTech Platform',
+    desc: 'Multi-vendor edtech marketplace with admin, vendor, and user modules. Integrated AWS S3 for storage, Razorpay for payments, and secured auth flows with JWT and Redis-backed session management.',
+    stack: ['Express.js', 'MongoDB', 'Redis', 'AWS S3', 'Razorpay'],
+    links: [],
+  },
+  {
+    label: 'Service · ML',
+    name: 'Face Recognition Service',
+    desc: 'Bridged Python face recognition logic with a Node.js API layer via child_process IPC. Stored user embeddings and metadata in SQLite, optimized for low-latency identification.',
+    stack: ['Python', 'Node.js', 'SQLite'],
+    links: [],
+  },
+];
+---
+
+<BaseLayout
+  title="Projects — Thrinath Gaddam"
+  description="Production projects built by Thrinath Gaddam — AI-powered SaaS platforms, backend infrastructure, and full stack applications."
+>
+  <div class="container">
+    <div class="projects-hero">
+      <h1>Projects</h1>
+      <p style="color: var(--color-text-muted); font-size: 1rem; max-width: 540px;">
+        Production systems and platforms I have designed, built, and shipped.
+        Each one taught me something that docs and tutorials do not cover.
+      </p>
+    </div>
+
+    <div class="projects-grid">
+      {projects.map(project => (
+        <div class="project-card">
+          <div class="project-card-label">{project.label}</div>
+          <h3>{project.name}</h3>
+          <p>{project.desc}</p>
+          <div class="project-stack">
+            {project.stack.map(t => <span class="tag">{t}</span>)}
+          </div>
+          {project.links.length > 0 && (
+            <div class="project-card-links">
+              {project.links.map((l: { href: string; text: string }) => (
+                <a href={l.href} class="project-link" target="_blank" rel="noopener">{l.text}</a>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

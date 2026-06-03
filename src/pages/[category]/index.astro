@@ -1,0 +1,94 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const categoryMap: Record<string, { label: string; desc: string; color: string }> = {
+    ai: {
+      label: 'AI',
+      desc: 'Writing about large language models, RAG pipelines, agents, embeddings, and what it takes to ship AI in production — not in demos.',
+      color: '#7C3AED',
+    },
+    backend: {
+      label: 'Backend',
+      desc: 'Node.js, FastAPI, PostgreSQL, MongoDB, Redis — the infrastructure layer that powers every user-facing feature.',
+      color: '#059669',
+    },
+    architecture: {
+      label: 'Architecture',
+      desc: 'System design patterns, SaaS multi-tenancy, distributed systems, event-driven architecture, and decisions that scale.',
+      color: '#D97706',
+    },
+    security: {
+      label: 'Security',
+      desc: 'OAuth, JWT, authentication flows, web vulnerabilities, and the security thinking that should be part of every build.',
+      color: '#DC2626',
+    },
+    notes: {
+      label: 'Notes',
+      desc: 'Quick learnings, migration notes, production observations, and things worth writing down before forgetting.',
+      color: '#6B7280',
+    },
+  };
+
+  return Object.entries(categoryMap).map(([slug, meta]) => ({
+    params: { category: slug },
+    props: { ...meta, slug },
+  }));
+}
+
+const { category } = Astro.params;
+const { label, desc, color, slug } = Astro.props;
+
+const allPosts = await getCollection('blog', ({ data }) =>
+  !data.draft && data.category === slug
+);
+const posts = allPosts.sort((a, b) =>
+  new Date(b.data.publishedAt).valueOf() - new Date(a.data.publishedAt).valueOf()
+);
+---
+
+<BaseLayout
+  title={`${label} — thrinath.dev`}
+  description={desc}
+>
+  <div class="container--narrow">
+    <div class="cat-header">
+      <div class="cat-breadcrumb"><a href="/">Home</a> / {label}</div>
+      <div class="cat-accent" style={`background: ${color}`}></div>
+      <h1>{label}</h1>
+      <p class="cat-desc">{desc}</p>
+    </div>
+
+    {posts.length === 0 ? (
+      <div style="padding: 4rem 0; color: var(--color-text-muted); text-align: center;">
+        <p>No posts yet. Check back soon.</p>
+      </div>
+    ) : (
+      <ul class="post-list">
+        {posts.map(post => {
+          const dateStr = new Date(post.data.publishedAt).toLocaleDateString('en-US', {
+            month: 'short', day: 'numeric', year: 'numeric',
+          });
+          return (
+            <li>
+              <a href={`/${post.data.category}/${post.id}`} class="post-list-item">
+                <div class="post-list-meta">
+                  <span>{dateStr}</span>
+                  {post.data.tags.length > 0 && (
+                    <>
+                      <span class="post-card-dot"></span>
+                      {post.data.tags.slice(0, 3).map(t => <span class="tag">{t}</span>)}
+                    </>
+                  )}
+                </div>
+                <div class="post-list-title">{post.data.title}</div>
+                <div class="post-list-desc">{post.data.description}</div>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </div>
+</BaseLayout>

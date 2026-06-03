@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About — Thrinath Gaddam"
+  description="Thrinath Gaddam is a Full Stack Developer and AI Engineer based in Hyderabad, building production AI systems, backend infrastructure, and secure SaaS platforms."
+>
+  <div class="container--narrow">
+    <div class="about-hero">
+      <h1>Building systems that are fast, secure, and actually ship.</h1>
+    </div>
+
+    <div class="about-section">
+      <h2>Background</h2>
+      <p style="color: var(--color-text-muted); line-height: 1.85; font-size: 0.9625rem;">
+        I am a software engineer who builds backend systems, AI-powered applications, and scalable SaaS products.
+        My core is Node.js, Python, and modern JavaScript — but what I actually do is take complex business
+        requirements and turn them into practical software: multi-tenant architectures, RESTful and event-driven APIs,
+        LLM pipelines, cloud infrastructure, and security-hardened auth flows.
+      </p>
+      <p style="color: var(--color-text-muted); line-height: 1.85; font-size: 0.9625rem; margin-top: 1rem;">
+        I am comfortable across the full stack — from React frontends to FastAPI microservices to Dockerized
+        deployments on AWS — but I spend most of my thinking on what sits behind the interface: how data moves,
+        where things break under load, and how to build systems that the next engineer can actually maintain.
+        Integrating machine learning and Generative AI into products is something I do regularly, not experimentally —
+        RAG pipelines, AI agents, LLM evaluation frameworks, and automation tooling that ships to real users.
+      </p>
+      <p style="color: var(--color-text-muted); line-height: 1.85; font-size: 0.9625rem; margin-top: 1rem;">
+        Beyond the day job, I am genuinely curious about how things work under the hood — distributed systems,
+        large language model internals, software architecture patterns. I explore new technology through
+        writing, side projects, and occasionally going too deep into a rabbit hole to understand something
+        most people treat as a black box.
+      </p>
+    </div>
+
+    <div class="about-section">
+      <h2>What I work with</h2>
+      <div class="skill-grid">
+        <div class="skill-group">
+          <h3>Languages</h3>
+          <ul class="skill-list">
+            <li>JavaScript / TypeScript</li>
+            <li>Python</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Backend</h3>
+          <ul class="skill-list">
+            <li>Node.js / Express.js</li>
+            <li>FastAPI</li>
+            <li>BullMQ / RabbitMQ</li>
+            <li>WebSockets</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>AI / LLM</h3>
+          <ul class="skill-list">
+            <li>LangChain / LangGraph</li>
+            <li>RAG pipelines</li>
+            <li>LLM evaluation</li>
+            <li>Prompt engineering</li>
+            <li>Ollama / Hugging Face</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Databases</h3>
+          <ul class="skill-list">
+            <li>PostgreSQL</li>
+            <li>MongoDB</li>
+            <li>Redis</li>
+            <li>Qdrant (vector DB)</li>
+            <li>Apache Solr</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Infrastructure</h3>
+          <ul class="skill-list">
+            <li>AWS (EC2, S3, Lambda)</li>
+            <li>Docker / NGINX</li>
+            <li>GitHub Actions</li>
+            <li>Linux</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Auth &amp; Security</h3>
+          <ul class="skill-list">
+            <li>OAuth2 / OIDC</li>
+            <li>JWT / sessions</li>
+            <li>SSO / RBAC</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h2>How I think</h2>
+      <p style="color: var(--color-text-muted); line-height: 1.85; font-size: 0.9625rem;">
+        Before I write a function, I am already thinking about what happens when it receives a thousand
+        concurrent requests, what the failure mode looks like, and whether the next engineer can understand
+        it without a Slack message. Scalability and maintainability are not things I bolt on later — they
+        are constraints I design around from the start.
+      </p>
+      <p style="color: var(--color-text-muted); line-height: 1.85; font-size: 0.9625rem; margin-top: 1rem;">
+        Security is not a phase. I have found NoSQL injection, XSS, and broken authentication in production
+        systems — including ones I built — and I treat finding them early as part of the job, not a
+        post-launch cleanup task.
+      </p>
+      <p style="color: var(--color-text-muted); line-height: 1.85; font-size: 0.9625rem; margin-top: 1rem;">
+        I also believe that good engineers understand their tools, not just their APIs. I regularly go
+        deeper than the docs — into how LLMs tokenize and attend, how databases plan queries, how
+        distributed systems reach consensus. That kind of understanding tends to surface in the decisions
+        that matter most.
+      </p>
+    </div>
+
+    <div class="about-section" style="border-bottom: none; padding-bottom: 4rem;">
+      <h2>Get in touch</h2>
+      <p style="color: var(--color-text-muted); font-size: 0.9625rem; margin-bottom: 1.25rem;">
+        I am open to conversations about interesting problems, collaboration, or just talking shop
+        about LLMs and distributed systems.
+      </p>
+      <div class="connect-links">
+        <a href="mailto:gaddamthrinath925@gmail.com" class="btn btn-primary">Send an email</a>
+        <a href="https://linkedin.com/in/gthrinath/" target="_blank" rel="noopener" class="btn btn-outline">LinkedIn</a>
+        <a href="https://github.com/gaddamthrinath" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
