@@ -1,6 +1,6 @@
 ---
 title: "Deploying a Full-Stack App on a VPS — The Right Way"
-description: "If you're deploying your first real project, or you've deployed before but never felt confident about *why* you're doing what you're doing — this is for you"
+description: "If you're deploying your first real project, or you've deployed before but never felt confident about why you're doing what you're doing — this is for you"
 category: "backend"
 tags: ["docker", "nginx", "full-stack", "deployment", "vps"]
 publishedAt: 2025-04-22
@@ -548,6 +548,7 @@ FROM node:22-alpine
 
 WORKDIR /app
 
+# i have used the serve package to serve the frontend app, as i am using Ngnix at top level in VPS
 RUN npm install -g serve
 
 COPY --from=builder /app/dist ./dist
