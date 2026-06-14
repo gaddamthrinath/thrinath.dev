@@ -29,11 +29,11 @@ This blog will help you **recognise this pattern quickly** and give you a step-b
 One day in production, I started seeing this error:
 
 ```
-Error: connect ETIMEDOUT 172.67.166.249:443
+Error: connect ETIMEDOUT 172.67.XXX.XXX:443
   errno: 'ETIMEDOUT',
   code: 'ETIMEDOUT',
   syscall: 'connect',
-  address: '172.67.166.249',
+  address: '172.67.XXX.XXX',
   port: 443
 ```
 
@@ -93,17 +93,17 @@ Output:
 
 ```
 * Host some-api.example.com:443 was resolved.
-* IPv4: 172.67.166.249, 104.21.83.17
-*   Trying 172.67.166.249:443...
-*   Trying 104.21.83.17:443...
-* Connected to some-api.example.com (104.21.83.17 port 443)
+* IPv4: 172.67.XXX.XXX, 104.21.xxx.xxx
+*   Trying 172.67.XXX.XXX:443...
+*   Trying 104.21.xxx.xxx:443...
+* Connected to some-api.example.com (104.21.xxx.xxx port 443)
 < HTTP/1.1 200 OK
 ```
 
 Two things jumped out:
 
-1. The domain resolved to **two IP addresses** — `172.67.166.249` and `104.21.83.17`
-2. curl connected successfully using `104.21.83.17`
+1. The domain resolved to **two IP addresses** — `172.67.XXX.XXX` and `104.21.xxx.xxx`
+2. curl connected successfully using `104.21.xxx.xxx`
 
 So the domain worked fine in curl. But my Node.js app was randomly timing out. Why?
 
@@ -115,17 +115,17 @@ curl has a handy flag `--connect-to` that forces it to use a specific IP while k
 
 ```bash
 # Test the first IP
-curl -v --connect-to some-api.example.com:443:172.67.166.249:443 https://some-api.example.com
+curl -v --connect-to some-api.example.com:443:172.67.XXX.XXX:443 https://some-api.example.com
 
 # Test the second IP
-curl -v --connect-to some-api.example.com:443:104.21.83.17:443 https://some-api.example.com
+curl -v --connect-to some-api.example.com:443:104.21.xxx.xxx:443 https://some-api.example.com
 ```
 
 Results:
 
 ```
-172.67.166.249  →  connection timed out ❌
-104.21.83.17    →  200 OK ✅
+172.67.XXX.XXX  →  connection timed out ❌
+104.21.xxx.xxx    →  200 OK ✅
 ```
 
 Now I knew exactly what was happening. One IP worked, the other didn't — at least from my VPS.
@@ -145,7 +145,7 @@ dns.lookup('some-api.example.com', { all: true }, (err, addresses) => {
         return;
     }
     console.log('Resolved IPs:', addresses);
-    // Output: [ { address: '172.67.166.249', family: 4 }, { address: '104.21.83.17', family: 4 } ]
+    // Output: [ { address: '172.67.XXX.XXX', family: 4 }, { address: '104.21.xxx.xxx', family: 4 } ]
 });
 ```
 
@@ -170,13 +170,13 @@ Cloudflare has servers all over the world. For load balancing and high availabil
 ```
 some-api.example.com
     ↓
-172.67.166.249  (Cloudflare node A)  ❌ broken from my VPS region
-104.21.83.17    (Cloudflare node B)  ✅ works fine
+172.67.XXX.XXX  (Cloudflare node A)  ❌ broken from my VPS region
+104.21.xxx.xxx    (Cloudflare node B)  ✅ works fine
 ```
 
 Both IPs are Cloudflare — not the real server. Cloudflare forwards the request internally. The real server IP is hidden.
 
-The problem here is that `172.67.166.249` was either a dead/inactive Cloudflare node or was blocking connections from my VPS provider's IP range. Either way — unreachable from my server.
+The problem here is that `172.67.XXX.XXX` was either a dead/inactive Cloudflare node or was blocking connections from my VPS provider's IP range. Either way — unreachable from my server.
 
 ---
 
@@ -215,7 +215,7 @@ function callExternalApi(payload: object) {
         options.agent = new https.Agent({
             lookup: (hostname, opts, cb) => {
                 // Always use the working IP, skip DNS entirely
-                cb(null, '104.21.83.17', 4);
+                cb(null, '104.21.xxx.xxx', 4);
             }
         });
     }
@@ -230,7 +230,7 @@ function callExternalApi(payload: object) {
 }
 ```
 
-This tells Node: *"Don't do a DNS lookup — just connect directly to `104.21.83.17`"*. But the `Host` header still says `some-api.example.com`, so the SSL certificate validates correctly.
+This tells Node: *"Don't do a DNS lookup — just connect directly to `104.21.xxx.xxx`"*. But the `Host` header still says `some-api.example.com`, so the SSL certificate validates correctly.
 
 > ⚠️ One caveat — if the API provider changes their Cloudflare IPs in the future, your hardcoded IP will stop working. Keep an eye on it and add retry logic as a safety net.
 
@@ -243,7 +243,7 @@ If you own the domain and have access to the Cloudflare dashboard, you can fix t
 1. Log into Cloudflare dashboard
 2. Go to **DNS** settings for your domain
 3. Find the A records for your domain
-4. Remove the broken IP (`172.67.166.249`) and keep only the working one (`104.21.83.17`)
+4. Remove the broken IP (`172.67.XXX.XXX`) and keep only the working one (`104.21.xxx.xxx`)
 
 This is the cleaner fix if you control the domain. But if you are consuming someone else's API, you obviously won't have this access — use Fix 1.
 
@@ -267,7 +267,7 @@ function callExternalApiWithRetry(payload: object, retriesLeft = 3) {
         timeout: 30000,
         agent: new https.Agent({
             lookup: (hostname, opts, cb) => {
-                cb(null, '104.21.83.17', 4);
+                cb(null, '104.21.xxx.xxx', 4);
             }
         })
     };
