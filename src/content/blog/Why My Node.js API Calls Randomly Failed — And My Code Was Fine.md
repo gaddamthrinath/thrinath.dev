@@ -4,6 +4,7 @@ description: "A real debugging story about intermittent ETIMEDOUT errors, Cloudf
 category: "backend"
 tags: ["cloudflare", "dns", "network", "troubleshooting"]
 publishedAt: 2026-06-14
+slug: "nodejs-api-calls-randomly-failed"
 ---
 
 

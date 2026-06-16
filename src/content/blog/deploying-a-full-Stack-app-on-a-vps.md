@@ -4,6 +4,7 @@ description: "If you're deploying your first real project, or you've deployed be
 category: "backend"
 tags: ["docker", "nginx", "full-stack", "deployment", "vps"]
 publishedAt: 2025-04-22
+slug: "deploying-fullstack-app-on-vps"
 ---
 
 This is the complete walkthrough. Not a sanitized tutorial — the actual thing, with the real decisions, the security reasoning, and the mistakes worth warning you about.

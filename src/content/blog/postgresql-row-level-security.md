@@ -4,6 +4,7 @@ description: "How to implement per-tenant data isolation at the database layer u
 category: "backend"
 tags: ["postgresql", "multi-tenancy", "rls", "saas", "security"]
 publishedAt: 2025-04-10
+slug: "postgresql-row-level-security"
 ---
 
 Multi-tenancy is one of those things that looks straightforward in architecture diagrams and turns into a minefield the moment you go to production. Row Level Security in PostgreSQL is the cleanest solution I've found.

@@ -4,6 +4,7 @@ description: "A clear breakdown of Authorization Code, Client Credentials, and P
 category: "security"
 tags: ["oauth", "jwt", "authentication", "oidc"]
 publishedAt: 2025-03-22
+slug: "oauth-flows-explained"
 ---
 
 OAuth 2.0 is one of those topics where a lot of tutorials stop at the happy path. This is a ground-up explanation of the flows that matter in production.

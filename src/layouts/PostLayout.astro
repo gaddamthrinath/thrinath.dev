@@ -24,9 +24,67 @@ const label = categoryLabels[category] ?? category;
 const dateStr = new Date(publishedAt).toLocaleDateString('en-US', {
   year: 'numeric', month: 'long', day: 'numeric',
 });
+
+// ISO date for structured data / OG meta
+const isoDate = new Date(publishedAt).toISOString();
+
+// Reading time estimate (~200 words per minute)
+const bodyText = post.body ?? '';
+const wordCount = bodyText.trim().split(/\s+/).length;
+const readingTime = Math.max(1, Math.round(wordCount / 200));
+
+// Canonical URL for JSON-LD
+const postSlug = post.data.slug ?? post.id;
+const canonicalURL = `https://thrinath.dev/${category}/${postSlug}`;
+
+// JSON-LD BlogPosting structured data
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: description,
+  url: canonicalURL,
+  datePublished: isoDate,
+  dateModified: isoDate,
+  keywords: tags.join(', '),
+  articleSection: label,
+  image: 'https://thrinath.dev/og-default.png',
+  author: {
+    '@type': 'Person',
+    name: 'Thrinath Gaddam',
+    url: 'https://thrinath.dev/about',
+    sameAs: [
+      'https://github.com/gaddamthrinath',
+      'https://linkedin.com/in/gthrinath/',
+    ],
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'thrinath.dev',
+    url: 'https://thrinath.dev',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://thrinath.dev/favicon.svg',
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': canonicalURL,
+  },
+};
 ---
 
-<BaseLayout title={`${title} — thrinath.dev`} description={description}>
+<BaseLayout
+  title={`${title} — thrinath.dev`}
+  description={description}
+  isArticle={true}
+  articlePublishedTime={isoDate}
+  articleTags={tags}
+  articleSection={label}
+>
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
   <div class="container--narrow">
     <div class="article-header">
       <div class="cat-breadcrumb">
@@ -39,6 +97,8 @@ const dateStr = new Date(publishedAt).toLocaleDateString('en-US', {
         <span>{dateStr}</span>
         <span class="reading-meta-dot"></span>
         <span style={`color: ${color}; font-weight: 600; font-size: 0.775rem`}>{label}</span>
+        <span class="reading-meta-dot"></span>
+        <span style="color: var(--color-muted); font-size: 0.775rem">{readingTime} min read</span>
         {tags.length > 0 && <><span class="reading-meta-dot"></span>
         <div style="display:flex; gap:0.375rem; flex-wrap:wrap;">
           {tags.map(t => <span class="tag">{t}</span>)}
